@@ -1,5 +1,5 @@
 """
-ASGI config for ParfumeShop project.
+ASGI config for parfume_shop project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ParfumeShop.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'parfume_shop.settings')
 
 application = get_asgi_application()
