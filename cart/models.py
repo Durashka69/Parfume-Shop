@@ -5,8 +5,6 @@ from itertools import chain
 
 from main.models import Product
 
-from cart.choices import StatusChoice
-
 
 class Cart(models.Model):
     user = models.ForeignKey(
@@ -17,7 +15,7 @@ class Cart(models.Model):
     @property
     def total_price(self):
         prices = self.cart_products.annotate(
-            last_price=models.F('product__price') * models.F('amount')
+            last_price=models.F('product__price') * models.F('quantity')
         ).values_list('last_price')
         return sum(chain(*prices))
 
@@ -30,20 +28,18 @@ class Cart(models.Model):
 
 
 class CartItem(models.Model):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name='Пользователь')
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, verbose_name='Продукт', related_name='cart_products')
     cart = models.ForeignKey(
         Cart, on_delete=models.CASCADE, related_name='cart_products')
-    quantity = models.PositiveIntegerField(
+    quantity = models.PositiveSmallIntegerField(
         default=1, verbose_name='Количество')
     order = models.ForeignKey(
         'Order', on_delete=models.CASCADE, verbose_name='Заказ', related_name='cart_products', null=True)
 
     @property
     def final_price(self):
-        return self.product.price * self.amount
+        return self.product.price * self.quantity
 
     @property
     def price(self):
@@ -54,7 +50,7 @@ class CartItem(models.Model):
         return self.product.title
 
     def __str__(self):
-        return f"{self.amount} {self.final_price}"
+        return f"{self.quantity} {self.final_price}"
 
     class Meta:
         verbose_name = 'Элемент корзины'
@@ -62,16 +58,14 @@ class CartItem(models.Model):
 
 
 class Order(models.Model):
-    name = models.CharField(max_length=50)
-    number = models.CharField(max_length=13)
-    address = models.CharField(max_length=100)
-    email = models.EmailField(max_length=255, null=True, blank=True)
-    descriptions = models.CharField(max_length=255, null=True)
-    price = models.PositiveIntegerField()
-    status = models.CharField(
-        max_length=15, choices=StatusChoice.choices, default=StatusChoice.ORDER)
+    name = models.CharField(max_length=50, verbose_name='Имя')
+    number = models.CharField(max_length=13, verbose_name='Номер телефона')
+    address = models.CharField(max_length=100, verbose_name='Адрес')
+    email = models.EmailField(max_length=255, null=True, blank=True, verbose_name='Email')
+    descriptions = models.CharField(max_length=255, null=True, verbose_name='Описание')
+    price = models.PositiveIntegerField(verbose_name='Цена')
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="orders")
+        User, on_delete=models.CASCADE, related_name="orders", verbose_name='Пользователь')
 
     def __str__(self):
         return self.name

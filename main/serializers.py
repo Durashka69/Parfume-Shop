@@ -80,4 +80,6 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ('id', 'title', 'year', 'image', 'brand', 'volume',
+                  'purpose', 'type_of', 'price', 'code', 'family', 
+                  'note', 'description', 'for_men', 'available', 'comments', 'ratings')
