@@ -48,6 +48,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username',)
+        ref_name = 'UserTest'
 
 
 class CommentSerializer(serializers.ModelSerializer):

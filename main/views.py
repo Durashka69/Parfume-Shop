@@ -10,8 +10,7 @@ from main.serializers import ProductSerializer, CommentSerializer, RatingSeriali
 from main.permissions import IsOwnerOrReadOnly
 
 
-class ProductListView(mixins.CreateModelMixin,
-                      mixins.RetrieveModelMixin,
+class ProductListView(mixins.RetrieveModelMixin,
                       mixins.ListModelMixin,
                       GenericViewSet):
     queryset = Product.objects.all()
@@ -24,7 +23,7 @@ class ProductListView(mixins.CreateModelMixin,
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = (IsOwnerOrReadOnly,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
